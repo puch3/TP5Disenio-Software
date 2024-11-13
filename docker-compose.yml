@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_USER: grupo4
+      MYSQL_PASSWORD: grupo4
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: tpDB
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql-data/db:/var/lib/mysql
+    restart: always
+
+  estudianteservice:
+    build:
+      context: EstudianteService
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=EstudianteService
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/tpDB
+      - SPRING_DATASOURCE_USERNAME=grupo4
+      - SPRING_DATASOURCE_PASSWORD=grupo4
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      - db
+    restart: always
+
+  inscripcionservice:
+    build:
+      context: InscripcionService
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=InscripcionService
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/tpDB
+      - SPRING_DATASOURCE_USERNAME=grupo4
+      - SPRING_DATASOURCE_PASSWORD=grupo4
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      - db
+    restart: always
+
+  carreraservice:
+    build:
+      context: CarreraService
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=CarreraService
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/tpDB
+      - SPRING_DATASOURCE_USERNAME=grupo4
+      - SPRING_DATASOURCE_PASSWORD=grupo4
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      - db
+    restart: always
